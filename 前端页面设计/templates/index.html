@@ -1,0 +1,80 @@
+{% set active_page = 'index' %}
+{% extends "base.html" %}
+{% block title %}主页 - 鲍鱼数据分析{% endblock %}
+
+{% block content %}
+{% set rows = data | default([]) %}
+{% set current = curPage | default(1) %}
+{% set pages = pageCnt | default(1) %}
+{% set chart_x = x | default([4,5,6,7,8,9,10,11,12,13,14,15,16,18,19,20,21]) %}
+{% set chart_y = y | default([2,2,2,12,11,13,16,8,8,6,5,6,3,1,2,2,1]) %}
+
+<section class="hero-band">
+    <div>
+        <p class="eyebrow">Marine Data Console</p>
+        <h1>鲍鱼年龄数据驾驶舱</h1>
+        <p>围绕性别、体型、重量和年龄分布，快速查看样本结构并进入预测流程。</p>
+    </div>
+    <a class="btn btn-ocean btn-lg" href="/pred.html">预测鲍鱼年龄</a>
+</section>
+
+<section class="metric-grid">
+    <div class="metric-card"><span>样本字段</span><strong>9</strong><em>features</em></div>
+    <div class="metric-card"><span>当前页</span><strong>{{ current }}</strong><em>page</em></div>
+    <div class="metric-card"><span>总页数</span><strong>{{ pages }}</strong><em>pages</em></div>
+    <div class="metric-card"><span>分布区间</span><strong>{{ chart_x | length }}</strong><em>rings</em></div>
+</section>
+
+<section class="content-grid">
+    <div class="panel-card chart-card">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Distribution</p>
+                <h2>鲍鱼年龄分布</h2>
+            </div>
+        </div>
+        <div class="chart-box" id="ringsChart" data-x='{{ chart_x | tojson }}' data-y='{{ chart_y | tojson }}'></div>
+    </div>
+
+    <div class="panel-card table-card">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Dataset Preview</p>
+                <h2>样本数据</h2>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table ocean-table">
+                <thead>
+                <tr>
+                    <th>性别</th><th>长度</th><th>直径</th><th>高度</th><th>总宽</th>
+                    <th>剥皮宽度</th><th>内脏宽度</th><th>贝壳宽度</th><th>年龄</th><th>查询</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for t in rows %}
+                <tr>
+                    <td>{{ t[1] }}</td><td>{{ t[2] }}</td><td>{{ t[3] }}</td><td>{{ t[4] }}</td><td>{{ t[5] }}</td>
+                    <td>{{ t[6] }}</td><td>{{ t[7] }}</td><td>{{ t[8] }}</td><td><strong>{{ t[9] }}</strong></td>
+                    <td><a class="btn btn-link btn-query" href="/abalone.html?id={{ t[0] }}">查询</a></td>
+                </tr>
+                {% else %}
+                <tr><td colspan="10" class="empty-cell">暂无数据，请接入后端数据源。</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <ul class="pagination ocean-pagination">
+            {% if current > 1 %}<li><a href="?page={{ current - 1 }}">上一页</a></li>{% endif %}
+            <li class="active"><a href="#">{{ current }}</a></li>
+            {% if current < pages %}<li><a href="?page={{ current + 1 }}">下一页</a></li>{% endif %}
+        </ul>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+AbaloneCharts.bar('ringsChart', '鲍鱼年龄分布', '年龄', '#0e8f9f');
+</script>
+{% endblock %}

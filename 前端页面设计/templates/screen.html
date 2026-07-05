@@ -1,0 +1,41 @@
+{% set active_page = 'screen' %}
+{% extends "base.html" %}
+{% block title %}大屏 - 鲍鱼数据分析{% endblock %}
+
+{% block content %}
+{% set rings_x = x | default([4,5,6,7,8,9,10,11,12,13,14,15,16,18,19,20,21]) %}
+{% set rings_y = y | default([2,2,2,12,11,13,16,8,8,6,5,6,3,1,2,2,1]) %}
+{% set sex_data = sex_data | default([{'name':'Male','value':36},{'name':'Infant','value':31},{'name':'Female','value':33}]) %}
+{% set weight_x = weight_x | default(['长度','直径','高度','总重','剥皮','内脏','贝壳']) %}
+{% set weight_y = weight_y | default([0.52,0.40,0.14,0.83,0.36,0.18,0.24]) %}
+<section class="screen-shell">
+    <div class="screen-head">
+        <div>
+            <p class="eyebrow">Realtime Display</p>
+            <h1>鲍鱼数据可视化大屏</h1>
+        </div>
+        <div class="screen-clock">Marine Analytics</div>
+    </div>
+
+    <div class="screen-metrics">
+        <div><span>样本总量</span><strong>{{ totalData | default(1000) }}</strong></div>
+        <div><span>年龄区间</span><strong>{{ rings_x | length }}</strong></div>
+        <div><span>模型数量</span><strong>3</strong></div>
+        <div><span>当前用户</span><strong>{{ name | default('用户') }}</strong></div>
+    </div>
+
+    <div class="screen-grid">
+        <div class="panel-card"><h2>年龄分布</h2><div class="chart-box screen-chart" id="screenRings" data-x='{{ rings_x | tojson }}' data-y='{{ rings_y | tojson }}'></div></div>
+        <div class="panel-card"><h2>性别占比</h2><div class="chart-box screen-chart" id="sexPie" data-series='{{ sex_data | tojson }}'></div></div>
+        <div class="panel-card wide"><h2>平均特征趋势</h2><div class="chart-box screen-chart" id="weightLine" data-x='{{ weight_x | tojson }}' data-y='{{ weight_y | tojson }}'></div></div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+AbaloneCharts.bar('screenRings', '年龄分布', '样本数', '#21b7c6');
+AbaloneCharts.pie('sexPie');
+AbaloneCharts.line('weightLine', '平均特征值');
+</script>
+{% endblock %}

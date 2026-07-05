@@ -1,0 +1,1 @@
+{"kind": "linear", "coef": [-5.122917691607187, 0.03576694672946257, -3.690432758661322, 15.013454572864802, 9.514861233152804, 3.561109318932724, -15.412617576868522, -1.8949855165194032, 16.93576147197664], "version": 2, "model_name": "LR", "features": ["sex", "length", "diameter", "height", "whole_weight", "shucked_weight", "viscera_weight", "shell_weight"]}

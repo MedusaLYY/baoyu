@@ -1,0 +1,83 @@
+{% set active_page = 'abalone' %}
+{% extends "base.html" %}
+{% block title %}查询 - 鲍鱼数据分析{% endblock %}
+
+{% block content %}
+{% set rows = data | default([]) %}
+{% set current = curPage | default(1) %}
+{% set pages = pageCnt | default(1) %}
+<section class="page-title">
+    <p class="eyebrow">Sample Lookup</p>
+    <h1>鲍鱼样本查询</h1>
+    <p>按编号、性别或年龄区间检索样本，快速查看单条记录的关键特征。</p>
+</section>
+
+<section class="panel-card query-panel">
+    <form class="row ocean-form compact-form" action="/abalone.html" method="get">
+        <div class="col-sm-3">
+            <label>样本编号</label>
+            <input class="form-control" name="id" value="{{ request.args.get('id', '') if request is defined else '' }}" placeholder="如 1">
+        </div>
+        <div class="col-sm-3">
+            <label>性别编码</label>
+            <select class="form-control" name="sex">
+                <option value="">全部</option>
+                <option value="1">1 - Male</option>
+                <option value="0">0 - Infant</option>
+                <option value="-1">-1 - Female</option>
+            </select>
+        </div>
+        <div class="col-sm-3">
+            <label>年龄范围</label>
+            <input class="form-control" name="rings" placeholder="如 7-12">
+        </div>
+        <div class="col-sm-3 form-action">
+            <button class="btn btn-ocean btn-block" type="submit">查询样本</button>
+        </div>
+    </form>
+</section>
+
+{% if record %}
+<section class="detail-strip">
+    <div><span>编号</span><strong>{{ record.id }}</strong></div>
+    <div><span>性别</span><strong>{{ record.sex }}</strong></div>
+    <div><span>长度</span><strong>{{ record.length }}</strong></div>
+    <div><span>直径</span><strong>{{ record.diameter }}</strong></div>
+    <div><span>年龄</span><strong>{{ record.rings }}</strong></div>
+</section>
+{% endif %}
+
+<section class="panel-card">
+    <div class="panel-head">
+        <div>
+            <p class="eyebrow">Query Result</p>
+            <h2>查询结果</h2>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table ocean-table">
+            <thead>
+            <tr>
+                <th>ID</th><th>性别</th><th>长度</th><th>直径</th><th>高度</th><th>总宽</th>
+                <th>剥皮宽度</th><th>内脏宽度</th><th>贝壳宽度</th><th>年龄</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for t in rows %}
+            <tr>
+                <td>{{ t[0] }}</td><td>{{ t[1] }}</td><td>{{ t[2] }}</td><td>{{ t[3] }}</td><td>{{ t[4] }}</td>
+                <td>{{ t[5] }}</td><td>{{ t[6] }}</td><td>{{ t[7] }}</td><td>{{ t[8] }}</td><td><strong>{{ t[9] }}</strong></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="10" class="empty-cell">暂无查询结果。</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <ul class="pagination ocean-pagination">
+        {% if current > 1 %}<li><a href="?page={{ current - 1 }}">上一页</a></li>{% endif %}
+        <li class="active"><a href="#">{{ current }}</a></li>
+        {% if current < pages %}<li><a href="?page={{ current + 1 }}">下一页</a></li>{% endif %}
+    </ul>
+</section>
+{% endblock %}

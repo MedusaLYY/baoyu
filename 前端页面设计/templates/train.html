@@ -1,0 +1,63 @@
+{% set active_page = 'train' %}
+{% extends "base.html" %}
+{% block title %}训练 - 鲍鱼数据分析{% endblock %}
+
+{% block content %}
+{% set results = train_results | default([]) %}
+<section class="page-title">
+    <p class="eyebrow">Model Training</p>
+    <h1>模型训练中心</h1>
+    <p>选择回归模型进行训练，比较误差指标和拟合效果。</p>
+</section>
+
+<section class="content-grid train-grid">
+    <div class="panel-card">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Training Control</p>
+                <h2>训练参数</h2>
+            </div>
+        </div>
+        <form class="ocean-form" action="/train.html" method="post">
+            <label>模型类型</label>
+            <select class="form-control" name="model_name">
+                <option value="LR">LR - 线性回归</option>
+                <option value="DT-R">DT-R - 决策树回归</option>
+                <option value="RF-R">RF-R - 随机森林回归</option>
+            </select>
+            <label>训练说明</label>
+            <textarea class="form-control" rows="4" readonly>系统将读取鲍鱼样本数据，组装特征向量，训练回归模型并返回 MAE、MSE、RMSE、R2 等指标。</textarea>
+            <button class="btn btn-ocean btn-lg btn-block" type="submit">开始训练</button>
+            {% if notice %}<div class="notice">{{ notice }}</div>{% endif %}
+        </form>
+    </div>
+
+    <div class="panel-card">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Metrics</p>
+                <h2>训练结果</h2>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table ocean-table">
+                <thead>
+                <tr>
+                    <th>模型</th><th>MAE</th><th>MSE</th><th>RMSE</th><th>R2</th><th>训练集</th><th>测试集</th><th>耗时(s)</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for r in results %}
+                <tr>
+                    <td><strong>{{ r[0] }}</strong></td><td>{{ r[1] }}</td><td>{{ r[2] }}</td><td>{{ r[3] }}</td>
+                    <td>{{ r[4] }}</td><td>{{ r[5] }}</td><td>{{ r[6] }}</td><td>{{ r[7] }}</td>
+                </tr>
+                {% else %}
+                <tr><td colspan="8" class="empty-cell">暂无训练结果。请选择模型并开始训练。</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

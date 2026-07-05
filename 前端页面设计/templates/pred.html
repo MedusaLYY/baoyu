@@ -1,0 +1,59 @@
+{% set active_page = 'pred' %}
+{% extends "base.html" %}
+{% block title %}预测 - 鲍鱼数据分析{% endblock %}
+
+{% block content %}
+<section class="page-title split-title">
+    <div>
+        <p class="eyebrow">Age Prediction</p>
+        <h1>鲍鱼年龄预测</h1>
+        <p>输入 8 个生物测量特征，选择模型后提交预测。</p>
+    </div>
+    <img src="{{ url_for('static', filename='img/abalone.webp') }}" alt="鲍鱼">
+</section>
+
+<section class="content-grid predict-grid">
+    <div class="panel-card">
+        <div class="panel-head">
+            <div>
+                <p class="eyebrow">Input Features</p>
+                <h2>特征输入</h2>
+            </div>
+        </div>
+        <form class="ocean-form feature-form" action="/pred.html" method="post">
+            <div class="row">
+                <div class="col-sm-6"><label>性别 sex</label><input class="form-control" name="sex" placeholder="1 / 0 / -1" required></div>
+                <div class="col-sm-6"><label>长度 length</label><input class="form-control" name="length" placeholder="0.455" required></div>
+                <div class="col-sm-6"><label>直径 diameter</label><input class="form-control" name="diameter" placeholder="0.365" required></div>
+                <div class="col-sm-6"><label>高度 height</label><input class="form-control" name="height" placeholder="0.095" required></div>
+                <div class="col-sm-6"><label>总重量 whole_weight</label><input class="form-control" name="whole_weight" placeholder="0.514" required></div>
+                <div class="col-sm-6"><label>剥皮重量 shucked_weight</label><input class="form-control" name="shucked_weight" placeholder="0.2245" required></div>
+                <div class="col-sm-6"><label>内脏重量 viscera_weight</label><input class="form-control" name="viscera_weight" placeholder="0.101" required></div>
+                <div class="col-sm-6"><label>贝壳重量 shell_weight</label><input class="form-control" name="shell_weight" placeholder="0.15" required></div>
+                <div class="col-sm-12">
+                    <label>模型选择</label>
+                    <select class="form-control" name="model_name">
+                        <option value="LR">LR - 线性回归</option>
+                        <option value="DT-R">DT-R - 决策树回归</option>
+                        <option value="RF-R">RF-R - 随机森林回归</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-ocean btn-lg btn-block" type="submit">开始预测</button>
+        </form>
+    </div>
+
+    <div class="panel-card result-card">
+        <p class="eyebrow">Prediction Result</p>
+        <h2>预测结果</h2>
+        {% if prediction is defined and prediction is not none %}
+        <div class="prediction-number">{{ prediction }}</div>
+        <p>预测年轮数，实际年龄约为年轮数 + 1.5 年。</p>
+        {% else %}
+        <div class="prediction-placeholder">--</div>
+        <p>提交左侧表单后，这里将显示预测年轮数。</p>
+        {% endif %}
+        {% if notice %}<div class="notice">{{ notice }}</div>{% endif %}
+    </div>
+</section>
+{% endblock %}

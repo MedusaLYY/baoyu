@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}鲍鱼数据分析{% endblock %}</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/abalone-dashboard.css') }}" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.0/dist/echarts.js"></script>
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="{% block body_class %}app-shell{% endblock %}">
+{% set current_page = active_page | default('index') %}
+{% if hide_nav is not defined or not hide_nav %}
+<nav class="navbar navbar-default ocean-nav" role="navigation">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainNav">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand brand-mark" href="/index.html">
+                <span class="brand-icon">AB</span>
+                鲍鱼数据分析
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="nav navbar-nav ocean-menu">
+                <li class="{{ 'active' if current_page == 'index' else '' }}"><a href="/index.html">主页</a></li>
+                <li class="{{ 'active' if current_page == 'abalone' else '' }}"><a href="/abalone.html">查询</a></li>
+                <li class="{{ 'active' if current_page == 'pred' else '' }}"><a href="/pred.html">预测</a></li>
+                <li class="{{ 'active' if current_page == 'train' else '' }}"><a href="/train.html">训练</a></li>
+                <li class="{{ 'active' if current_page == 'screen' else '' }}"><a href="/screen.html">大屏</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a class="user-chip" href="/login.html"><span class="glyphicon glyphicon-user"></span> 欢迎用户：{{ name | default('用户') }}</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endif %}
+
+<main class="{% block main_class %}page-wrap{% endblock %}">
+    {% block content %}{% endblock %}
+</main>
+
+<script src="{{ url_for('static', filename='js/abalone-dashboard.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
