@@ -107,6 +107,51 @@ class BackendSmokeTest(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("请输入有效的数值特征".encode("utf-8"), response.data)
 
+    def test_register_logs_user_in_and_redirects_to_index(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            app = self.make_app(Path(tmp))
+            client = app.test_client()
+
+            response = client.post(
+                "/login.html",
+                data={
+                    "registerBtn": "1",
+                    "regUsername": "new-user",
+                    "regPassword": "new-password",
+                    "regName": "New User",
+                },
+            )
+
+            with client.session_transaction() as flask_session:
+                username = flask_session.get("username")
+                name = flask_session.get("name")
+
+            duplicate_response = client.post(
+                "/login.html",
+                data={
+                    "registerBtn": "1",
+                    "regUsername": "new-user",
+                    "regPassword": "new-password",
+                    "regName": "New User",
+                },
+            )
+
+            with client.session_transaction() as flask_session:
+                duplicate_username = flask_session.get("username")
+                duplicate_name = flask_session.get("name")
+
+            index_response = client.get("/index.html")
+            self.dispose_app(app)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.headers["Location"], "/index.html")
+        self.assertEqual(username, "new-user")
+        self.assertEqual(name, "New User")
+        self.assertEqual(duplicate_response.status_code, 200)
+        self.assertEqual(duplicate_username, "new-user")
+        self.assertEqual(duplicate_name, "New User")
+        self.assertEqual(index_response.status_code, 200)
+
 
 class DataProcessTest(unittest.TestCase):
     def test_local_lr_all_one_demo_input_matches_course_prediction(self):

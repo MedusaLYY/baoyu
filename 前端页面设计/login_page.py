@@ -34,7 +34,9 @@ def login():
             return render_template("login.html", notice="用户名已存在")
         db.session.add(User(username=username, password=password, name=name))
         db.session.commit()
-        return render_template("login.html", notice="注册成功，请登录")
+        session["username"] = username
+        session["name"] = name
+        return redirect("/index.html")
 
     username = (request.form.get("username") or "").strip()
     password = (request.form.get("password") or "").strip()
